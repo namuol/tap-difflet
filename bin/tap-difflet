@@ -67,8 +67,7 @@ tap.on('extra', function(res) {
     try {
       res = yaml.safeLoad(res);
     } catch (e) {}
-    errors.push(chalk.gray(res));
-    output(errors[errors.length-1]);
+    output(chalk.yellow(res));
     output('\n');
   }
 });
