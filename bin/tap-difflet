@@ -64,12 +64,14 @@ tap.on('assert', function(res) {
 
 tap.on('extra', function(res) {
   if (res !== '') {
-    try {
-      res = yaml.safeLoad(res);
-    } catch (e) {}
-    errors.push(chalk.gray(res));
-    output(errors[errors.length-1]);
-    output('\n');
+    if (res.indexOf('---') === 0){
+      errors.push(chalk.gray(res));
+      output(errors[errors.length-1]);
+      output('\n');
+    } else {
+      output('    ' + chalk.blue(res));
+      output('\n');
+    }
   }
 });
 
