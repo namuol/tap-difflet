@@ -9,7 +9,6 @@ test('1 === 2', function(assert) {
   setTimeout(function () {
     assert.equal(1, 2);
   }, 500);
-
 });
 
 test('2 === 1', function(assert) {
