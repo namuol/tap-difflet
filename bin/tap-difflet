@@ -19,7 +19,66 @@ var tap = parser();
 var out = through();
 var dup = duplexer(tap, out);
 
+
+/* Pessimism */
+
+function userSpecifiedPessimistic (args) {
+  for (var ai=2; ai < args.length; ++ai) {
+    if (args[ai] === '-p' || args[ai] === '--pessimist') {
+      return true;
+    }
+  }  
+
+  return false;
+};
+
+
+if (userSpecifiedPessimistic(process.argv)) {
+  var anAssertFailed = true;
+  var originalOut = out;
+  var buffer = null;
+  tap.on('comment', function(comment) {
+    if (buffer && anAssertFailed) {
+      for (var bi=0; bi<buffer.length; ++bi) {
+        originalOut.push(buffer[bi]);
+      }
+    }
+    
+    buffer = null;
+    anAssertFailed = false;
+    out = originalOut;
+    
+    if (commentType(comment) === '') {
+      buffer = [];
+      out = buffer;
+    }    
+  });
+  
+  tap.on('assert', function(res) {
+    if (!res.ok) {
+      anAssertFailed = true;  
+    }  
+  });
+}
+
 /* Helpers */
+
+function commentType(comment) {
+  if (/^tests\s+[0-9]+$/gi.test(comment)) {
+    return 'tests';
+  }
+  else if (/^pass\s+[0-9]+$/gi.test(comment)) {
+      return 'pass';
+  }
+  else if (/^fail\s+[0-9]+$/gi.test(comment)) {
+      return 'fail';
+  }
+  else if (/^ok$/gi.test(comment)) {
+    return 'ok';
+  } else {
+    return '';
+  }  
+};
 
 function output(str) {
   out.push(str);
@@ -31,22 +90,23 @@ var timer   = hirestime();
 var errors  = [];
 
 tap.on('comment', function(comment) {
-    if (/^tests\s+[0-9]+$/gi.test(comment)) {
-        output('\n');
-        comment = chalk.white.bold(comment);
-    }
-    else if (/^pass\s+[0-9]+$/gi.test(comment)) {
-        comment = chalk.green.bold(comment);
-    }
-    else if (/^fail\s+[0-9]+$/gi.test(comment)) {
-        comment = chalk.red.bold(comment);
-    }
-    else if (/^ok$/gi.test(comment)) {
-        return;
-    }
-    else {
-        output('\n');
-        comment = chalk.white.bold(comment);
+  
+    switch (commentType(comment)) {
+    case 'tests':
+      output('\n');
+      comment = chalk.white.bold(comment);
+      break;
+    case 'pass':
+      comment = chalk.green.bold(comment);
+      break;
+    case 'fail':
+      comment = chalk.red.bold(comment);
+      break;
+    case 'ok':
+      return;
+    default:
+      output('\n');
+      comment = chalk.white.bold(comment);
     }
 
     output('  ' + comment + '\n');
