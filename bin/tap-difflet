@@ -27,7 +27,7 @@ function userSpecifiedPessimistic (args) {
     if (args[ai] === '-p' || args[ai] === '--pessimist') {
       return true;
     }
-  }  
+  }
 
   return false;
 };
@@ -43,41 +43,49 @@ if (userSpecifiedPessimistic(process.argv)) {
         originalOut.push(buffer[bi]);
       }
     }
-    
+
     buffer = null;
     anAssertFailed = false;
     out = originalOut;
-    
-    if (commentType(comment) === '') {
+
+    if (getCommentType(comment) === CommentType.OTHER) {
       buffer = [];
       out = buffer;
-    }    
+    }
   });
-  
+
   tap.on('assert', function(res) {
     if (!res.ok) {
-      anAssertFailed = true;  
-    }  
+      anAssertFailed = true;
+    }
   });
 }
 
 /* Helpers */
+var CommentType = {
+  OTHER: 1,
+  TESTS: 2,
+  PASS: 3,
+  FAIL: 4,
+  OK: 5
+};
 
-function commentType(comment) {
+function getCommentType(comment) {
   if (/^tests\s+[0-9]+$/gi.test(comment)) {
-    return 'tests';
+    return CommentType.TESTS;
   }
   else if (/^pass\s+[0-9]+$/gi.test(comment)) {
-      return 'pass';
+    return CommentType.PASS;
   }
   else if (/^fail\s+[0-9]+$/gi.test(comment)) {
-      return 'fail';
+    return CommentType.FAIL;
   }
   else if (/^ok$/gi.test(comment)) {
-    return 'ok';
-  } else {
-    return '';
-  }  
+    return CommentType.OK;
+  }
+  else {
+    return CommentType.OTHER;
+  }
 };
 
 function output(str) {
@@ -90,26 +98,26 @@ var timer   = hirestime();
 var errors  = [];
 
 tap.on('comment', function(comment) {
-  
-    switch (commentType(comment)) {
-    case 'tests':
-      output('\n');
-      comment = chalk.white.bold(comment);
-      break;
-    case 'pass':
-      comment = chalk.green.bold(comment);
-      break;
-    case 'fail':
-      comment = chalk.red.bold(comment);
-      break;
-    case 'ok':
-      return;
-    default:
-      output('\n');
-      comment = chalk.white.bold(comment);
-    }
+  var commentType = getCommentType(comment);
+  if (commentType === CommentType.TESTS) {
+    output('\n');
+    comment = chalk.white.bold(comment);
+  }
+  else if (commentType === CommentType.PASS) {
+    comment = chalk.green.bold(comment);
+  }
+  else if (commentType === CommentType.FAIL) {
+    comment = chalk.red.bold(comment);
+  }
+  else if (commentType === CommentType.OK) {
+    return;
+  }
+  else {
+    output('\n');
+    comment = chalk.white.bold(comment);
+  }
 
-    output('  ' + comment + '\n');
+  output('  ' + comment + '\n');
 });
 
 tap.on('assert', function(res) {
@@ -150,10 +158,10 @@ tap.on('results', function(res) {
 
 tap.on('diag', function (diag) {
   var expected, actual, at,
-      gotExpected = true,
-      gotActual = true,
-      gotAt = true,
-      str = '';
+    gotExpected = true,
+    gotActual = true,
+    gotAt = true,
+    str = '';
 
   if (diag.hasOwnProperty('expected')) {
     expected = diag.expected;
@@ -180,15 +188,15 @@ tap.on('diag', function (diag) {
 
   if (gotActual && gotExpected) {
     if (typeof expected !== typeof actual ||
-        typeof expected === "object" && (!actual || !expected)) {
+        typeof expected === 'object' && (!actual || !expected)) {
       str = 'Expected ' + typeof expected + ' but got ' + typeof actual;
-    } else if (typeof expected === "string") {
+    } else if (typeof expected === 'string') {
       if (str.indexOf('\n') >= 0) {
         str = ansidiff.lines(expected, actual);
       } else {
         str = ansidiff.chars(expected, actual);
       }
-    } else if (typeof expected === "object") {
+    } else if (typeof expected === 'object') {
       str = objdiff(expected, actual);
     } else {
       str = chalk.white('Expected ') + chalk.bold(''+expected) + chalk.white(' but got ') + chalk.bold(''+actual);
