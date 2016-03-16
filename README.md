@@ -15,6 +15,12 @@ npm install tap-difflet --save-dev
 tape test/*.js | tap-difflet
 ~~~
 
+For pessimistic usage specify -p or --pessimist - this will only output the errors and the summary.
+
+~~~ text
+tape test/*.js | tap-difflet -p
+~~~
+
 ## Output
 
 ![tap-difflet](http://i.imgur.com/8uFAvXU.png)
