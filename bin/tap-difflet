@@ -29,6 +29,7 @@ function output(str) {
 
 var timer   = hirestime();
 var errors  = [];
+var errorSummary = [];
 
 tap.on('comment', function(comment) {
     if (/^tests\s+[0-9]+$/gi.test(comment)) {
@@ -56,6 +57,7 @@ tap.on('assert', function(res) {
   if (res.ok) {
     output('    ' + chalk.green.bold('✓') + ' ' + chalk.gray(res.name) + '\n');
   } else {
+    errorSummary.push(res.name);
     assert = chalk.red.bold('⨯ ' + res.name + '\n');
     errors.push(chalk.white(assert));
     output('    ' + errors[errors.length-1]);
@@ -83,6 +85,7 @@ tap.on('results', function(res) {
   output(chalk.green.bold(Math.max(0,count-errors.length) + ' passing') + chalk.gray(' (' + time + ')'));
   if (errors.length) {
     output(chalk.red.bold('\n' + errors.length + ' failing'));
+    output(summarizeErrors(errorSummary));
   }
 
   output('\n\n');
@@ -155,5 +158,14 @@ process.stdin.pipe(dup).pipe(process.stdout);
 process.on('exit', function () {
   process.exit(errors.length);
 });
+
+function summarizeErrors(errors) {
+  var summary = chalk.underline.bold('\n\nTests that failed:\n');
+
+  errors.forEach(function(error) {
+    summary += chalk.red.bold('  ⨯ ' + error + '\n');
+  });
+  return summary;
+}
 
 // vim:filetype=javascript
