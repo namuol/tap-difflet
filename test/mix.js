@@ -1,0 +1,2 @@
+require ('./pass');
+require ('./fail');
