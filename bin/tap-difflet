@@ -15,25 +15,29 @@ var objdiff   = require('difflet')({
 
 var ansidiff  = require('ansidiff');
 
+var docopt = require('docopt').docopt;
+
+var usage = [
+  'Process TAP output on STDIN and print diffs of failed comparisons.',
+  '',
+  'Usage: tap-difflet [options]',
+  '',
+  'Options:',
+  '  -p --pessimistic  Only output failed tests.',
+  '  -v --version      Print the version of tap-difflet.',
+  '  -h --help         Show this.',
+].join('\n');
+
+var pkg = require('../package.json');
+var options = docopt(usage, {
+  version: pkg.version,
+});
+
 var tap = parser();
 var out = through();
 var dup = duplexer(tap, out);
 
-
-/* Pessimism */
-
-function userSpecifiedPessimistic (args) {
-  for (var ai=2; ai < args.length; ++ai) {
-    if (args[ai] === '-p' || args[ai] === '--pessimist') {
-      return true;
-    }
-  }
-
-  return false;
-};
-
-
-if (userSpecifiedPessimistic(process.argv)) {
+if (options['--pessimistic']) {
   var anAssertFailed = true;
   var originalOut = out;
   var buffer = null;
