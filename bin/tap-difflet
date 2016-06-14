@@ -108,7 +108,7 @@ tap.on('comment', function(comment) {
     || commentType === CommentType.PASS
     || commentType === CommentType.FAIL )
   {
-    return
+    return;
   }
 
   output('\n  ' + chalk.white.bold(comment) + '\n');
