@@ -103,25 +103,15 @@ var errors  = [];
 
 tap.on('comment', function(comment) {
   var commentType = getCommentType(comment);
-  if (commentType === CommentType.TESTS) {
-    output('\n');
-    comment = chalk.white.bold(comment);
-  }
-  else if (commentType === CommentType.PASS) {
-    comment = chalk.green.bold(comment);
-  }
-  else if (commentType === CommentType.FAIL) {
-    comment = chalk.red.bold(comment);
-  }
-  else if (commentType === CommentType.OK) {
+  if ( commentType === CommentType.TESTS
+    || commentType === CommentType.OK
+    || commentType === CommentType.PASS
+    || commentType === CommentType.FAIL )
+  {
     return;
   }
-  else {
-    output('\n');
-    comment = chalk.white.bold(comment);
-  }
 
-  output('  ' + comment + '\n');
+  output('\n  ' + chalk.white.bold(comment) + '\n');
 });
 
 tap.on('assert', function(res) {
@@ -152,10 +142,10 @@ tap.on('results', function(res) {
   var time  = prettyms(timer());
   output('\n');
 
-  output(chalk.green.bold(Math.max(0,count-errors.length) + ' passing') + chalk.gray(' (' + time + ')'));
   if (errors.length) {
-    output(chalk.red.bold('\n' + errors.length + ' failing'));
+    output(chalk.red.bold(errors.length + ' failing\n'));
   }
+  output(chalk.green.bold(Math.max(0,count-errors.length) + ' passing') + chalk.gray(' (' + time + ')'));
 
   output('\n\n');
 });
