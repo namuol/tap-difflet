@@ -143,9 +143,9 @@ tap.on('results', function(res) {
   output('\n');
 
   if (errors.length) {
-    output(chalk.red.bold(errors.length + ' failing'));
+    output(chalk.red.bold(errors.length + ' failing\n'));
   }
-  output('\n' + chalk.green.bold(Math.max(0,count-errors.length) + ' passing') + chalk.gray(' (' + time + ')'));
+  output(chalk.green.bold(Math.max(0,count-errors.length) + ' passing') + chalk.gray(' (' + time + ')'));
 
   output('\n\n');
 });
