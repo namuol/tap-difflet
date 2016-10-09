@@ -32,5 +32,5 @@ var formatter = require('..')(getOptionsWithotDashes(options));
 
 process.stdin.pipe(formatter).pipe(process.stdout);
 process.on('exit', function () {
-  process.exit(formatter.errors.length);
+  process.exit(formatter._errors.length);
 });

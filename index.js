@@ -191,7 +191,7 @@ module.exports = function (options) {
 
   });
 
-  dup.errors = errors;
+  dup._errors = errors;
 
   return dup;
 };
