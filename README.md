@@ -25,7 +25,7 @@ It also can be used inside node code
 ~~~ text
 var tapDifflet = require('tap-difflet');
 
-const formatter = tapDifflet({
+var formatter = tapDifflet({
   pessimistic: true // Only output failed tests. `false` by default.
 });
 ~~~
