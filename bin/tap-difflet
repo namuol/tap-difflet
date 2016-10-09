@@ -19,7 +19,7 @@ var options = docopt(usage, {
   version: pkg.version,
 });
 
-function getOptionsWithotDashes(options) {
+function getOptionsWithoutDashes(options) {
   const transformedOptions = {}
   Object.keys(options).forEach(key => {
     const keyWithoutDashes = key.replace(/^(--|-)/, '');
@@ -28,7 +28,7 @@ function getOptionsWithotDashes(options) {
   return transformedOptions;
 }
 
-var formatter = require('..')(getOptionsWithotDashes(options));
+var formatter = require('..')(getOptionsWithoutDashes(options));
 
 process.stdin.pipe(formatter).pipe(process.stdout);
 process.on('exit', function () {
