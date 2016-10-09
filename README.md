@@ -23,10 +23,10 @@ Options:
 It also can be used inside node code
 
 ~~~ text
-import tapDifflet from 'tap-difflet';
+var tapDifflet = require('tap-difflet');
 
 const formatter = tapDifflet({
-  pessimistic: true
+  pessimistic: true // Only output failed tests. `false` by default.
 });
 ~~~
 
