@@ -18,7 +18,7 @@ module.exports = function (options) {
   var out = through();
   var dup = duplexer(tap, out);
 
-  if (options['--pessimistic']) {
+  if (options.pessimistic) {
     var anAssertFailed = true;
     var originalOut = out;
     var buffer = null;
@@ -190,6 +190,8 @@ module.exports = function (options) {
     }
 
   });
+
+  dup.errors = errors;
 
   return dup;
 };

@@ -19,10 +19,18 @@ var options = docopt(usage, {
   version: pkg.version,
 });
 
+function getOptionsWithotDashes(options) {
+  const transformedOptions = {}
+  Object.keys(options).forEach(key => {
+    const keyWithoutDashes = key.replace(/^(--|-)/, '');
+    transformedOptions[keyWithoutDashes] = options[key];
+  });
+  return transformedOptions;
+}
 
-var reporter = require('..')(options);
+var formatter = require('..')(getOptionsWithotDashes(options));
 
-process.stdin.pipe(reporter).pipe(process.stdout);
+process.stdin.pipe(formatter).pipe(process.stdout);
 process.on('exit', function () {
-  process.exit(errors.length);
+  process.exit(formatter.errors.length);
 });

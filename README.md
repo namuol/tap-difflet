@@ -20,6 +20,16 @@ Options:
   -h --help         Show this.
 ~~~
 
+It also can be used inside node code
+
+~~~ text
+import tapDifflet from 'tap-difflet';
+
+const formatter = tapDifflet({
+  pessimistic: true
+});
+~~~
+
 ## Output
 
 ![tap-difflet](http://i.imgur.com/8uFAvXU.png)
