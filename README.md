@@ -20,6 +20,16 @@ Options:
   -h --help         Show this.
 ~~~
 
+It also can be used inside node code
+
+~~~ text
+var tapDifflet = require('tap-difflet');
+
+var formatter = tapDifflet({
+  pessimistic: true // Only output failed tests. `false` by default.
+});
+~~~
+
 ## Output
 
 ![tap-difflet](http://i.imgur.com/8uFAvXU.png)
