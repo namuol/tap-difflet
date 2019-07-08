@@ -21,7 +21,7 @@ var options = docopt(usage, {
 
 function getOptionsWithoutDashes(options) {
   const transformedOptions = {}
-  Object.keys(options).forEach(key => {
+  Object.keys(options).forEach(function(key) {
     const keyWithoutDashes = key.replace(/^(--|-)/, '');
     transformedOptions[keyWithoutDashes] = options[key];
   });
