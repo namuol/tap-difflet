@@ -1,6 +1,6 @@
 {
   "name": "tap-difflet",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "TAP output formatter using difflet for inequality errors.",
   "bin": {
     "tap-difflet": "bin/tap-difflet"
